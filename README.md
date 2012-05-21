@@ -12,7 +12,7 @@ How to Use
 1. Add `MDPictureSourceSheet.h` and `MDPictureSourceSheet.m` to your Xcode project.
 2. (Only required if your project does not use ARC) Add the `-f-objc-arc` compiler flag to `MDPictureSourceSheet.m` in your target's Compile Sources step.
 3. Import `MDPictureSource.h` in the view controller you wish to present the source sheet from.
-4. Implement the `MDPictureSourceDelegate`, `UIImagePickerControllerDelegate` and `UINavigationControllerDelegate` methods in that view controller. `MDPictureSourceSheet.h`.
+4. Implement the `MDPictureSourceDelegate`, `UIImagePickerControllerDelegate` and `UINavigationControllerDelegate` methods in that view controller.
 5. Initialise an `MDPictureSourceSheet`, set the delegates and configure it.
 6. When you're ready to present the sheet, call `presentPictureSourceSheet`.
 

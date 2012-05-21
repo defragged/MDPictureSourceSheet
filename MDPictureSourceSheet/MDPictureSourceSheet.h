@@ -87,7 +87,7 @@
 /**
  Called when a UIActionSheet should be displayed.
  
- Usually to pick a source, or delete and image.
+ Usually to pick a source, or delete an image.
  
  @param sheet The UIActionSheet to display.
  */

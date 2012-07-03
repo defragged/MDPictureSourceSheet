@@ -50,6 +50,12 @@
 /// The UIActionSheet's title.
 @property (strong, nonatomic) NSString *title;
 
+/// Whether or not to allow import of still images
+@property (assign, nonatomic) BOOL displayImages;
+
+/// Whether or not to allow import of moving images (if available)
+@property (assign, nonatomic) BOOL displayMovies;
+
 /**
  Whether or not an image already exists to be manipulated.
  

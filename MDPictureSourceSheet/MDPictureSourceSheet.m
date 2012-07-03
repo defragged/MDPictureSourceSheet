@@ -22,6 +22,9 @@
 //  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 //  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+// Requires MobileCoresServices.framework
+#import <MobileCoreServices/UTCoreTypes.h>
+
 #import "MDPictureSourceSheet.h"
 
 @interface MDPictureSourceSheet ()
@@ -32,6 +35,8 @@
 @property (assign, nonatomic) BOOL libraryAvailable;
 @property (assign, nonatomic) BOOL videoCaptureAvailable;
 
+@property (assign, nonatomic) BOOL capturingFromCamera;
+
 @end
 
 @implementation MDPictureSourceSheet
@@ -41,6 +46,11 @@
 @synthesize libraryAvailable = _libraryAvailable;
 @synthesize videoCaptureAvailable = _videoCaptureAvailable;
 
+@synthesize capturingFromCamera = _capturingFromCamera;
+
+@synthesize displayImages = _displayImages;
+@synthesize displayMovies = _displayMovies;
+
 @synthesize pictureSourceDelegate = _pictureSourceDelegate;
 @synthesize pickerDelegate = _pickerDelegate;
 
@@ -48,6 +58,19 @@
 @synthesize existingImage = _existingImage;
 
 @dynamic visible;
+
+#pragma mark - Initialisers
+
+-(id)init{
+	self = [super init];
+	
+	if(self){
+		// Set default values
+		self.displayImages = YES;
+	}
+	
+	return self;
+}
 
 #pragma mark - Presenting
 
@@ -85,21 +108,34 @@
 																   @"Cancel",
 																   @"Title for button to dismiss an action sheet without taking an action");
 	
+	// Determine whether or not we will be trying to capture from the camera
+	self.capturingFromCamera = NO;
+	if(self.cameraAvailable){
+		if(!self.displayImages && self.displayMovies && !self.videoCaptureAvailable){
+			// Only capturing video, but video capture is not available
+			self.capturingFromCamera = NO;
+		
+		}else{
+			// Capturing still images, or video with video available: Allow camera.
+			self.capturingFromCamera = YES;
+		}
+	}
+	
 	// Only one possible option available: Don't bother with the ActionSheet
 	if(!self.existingImage){
-		if(self.cameraAvailable && !self.libraryAvailable){
+		if(self.capturingFromCamera && !self.libraryAvailable){
 			// Only the camera is available: Show the camera controls
 			[self choosePictureFromCamera];
 			return;
 			
-		}else if(self.libraryAvailable && !self.cameraAvailable){
+		}else if(self.libraryAvailable && !self.capturingFromCamera){
 			// Only the library is available (iPod Touch, Simulator etc): Show the library
 			[self choosePictureFromLibrary];
 			return;
 		}
 	}
 	
-	if(self.cameraAvailable && self.libraryAvailable){
+	if(self.capturingFromCamera && self.libraryAvailable){
 		// Both camera and library are available: Let the user select one.
 		self.sheet = [[UIActionSheet alloc]initWithTitle:self.title
 												delegate:self
@@ -107,7 +143,7 @@
 								  destructiveButtonTitle:destructiveButtonTitle
 									   otherButtonTitles:cameraButtonText, libraryButtonText, nil];
 		
-	}else if(self.cameraAvailable){
+	}else if(self.capturingFromCamera){
 		// Only camera (and deletion) is available, show that ActionSheet
 		self.sheet = [[UIActionSheet alloc]initWithTitle:self.title
 												delegate:self
@@ -132,12 +168,32 @@
 	return self.sheet.isVisible;
 }
 
+/*
+ Creates an array that can be passed to `UIImagePickerController`'s `mediaTypes`
+ property based on the requested media types.
+ */
+-(NSArray*)mediaTypes{
+	
+	NSMutableArray *types = [[NSMutableArray alloc]initWithCapacity:2];
+	
+	if(self.displayImages){
+		[types addObject:(NSString*)kUTTypeImage];
+	}
+	
+	if(self.displayMovies){
+		[types addObject:(NSString*)kUTTypeMovie];
+	}
+	
+	return [NSArray arrayWithArray:types];
+}
+
 #pragma mark - Choosing Images
 
 -(void)choosePictureFromLibrary{
 	
 	UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
 	imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+	imagePickerController.mediaTypes = [self mediaTypes];
 	imagePickerController.delegate = self.pickerDelegate;
 	[self.pictureSourceDelegate sheet:self shouldPresentPicker:imagePickerController];
 }
@@ -145,6 +201,7 @@
 -(void)choosePictureFromCamera{
 	UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
 	imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
+	imagePickerController.mediaTypes = [self mediaTypes];
 	imagePickerController.delegate = self.pickerDelegate;
 	[self.pictureSourceDelegate sheet:self shouldPresentPicker:imagePickerController];
 }
@@ -161,7 +218,7 @@
 			[self.pictureSourceDelegate dismissedSheet:self];
 		}
 		
-	}else if(self.cameraAvailable && self.libraryAvailable){
+	}else if(self.capturingFromCamera && self.libraryAvailable){
 		
 		// Both sources available, check which one was selected.
 		if(buttonIndex == actionSheet.firstOtherButtonIndex){
@@ -171,7 +228,7 @@
 			[self choosePictureFromLibrary];
 		}
 		
-	}else if(self.cameraAvailable){
+	}else if(self.capturingFromCamera){
 		// Cancel/Remove not selected, only one other choice:
 		[self choosePictureFromCamera];
 		

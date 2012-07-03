@@ -98,7 +98,7 @@
 																  @"Take a Photo",
 																  @"Title for button user can use to take a picture");
 	
-	NSString *videoButtonText = NSLocalizedStringWithDefaultValue(@"PhotoAndVideoButtonLabel",
+	NSString *videoButtonText = NSLocalizedStringWithDefaultValue(@"VideoButtonLabel",
 																  @"PictureSourceSheet",
 																  [NSBundle mainBundle],
 																  @"Record a Video",

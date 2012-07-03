@@ -30,6 +30,7 @@
 
 @property (assign, nonatomic) BOOL cameraAvailable;
 @property (assign, nonatomic) BOOL libraryAvailable;
+@property (assign, nonatomic) BOOL videoCaptureAvailable;
 
 @end
 
@@ -38,6 +39,7 @@
 @synthesize sheet = _sheet;
 @synthesize cameraAvailable = _cameraAvailable;
 @synthesize libraryAvailable = _libraryAvailable;
+@synthesize videoCaptureAvailable = _videoCaptureAvailable;
 
 @synthesize pictureSourceDelegate = _pictureSourceDelegate;
 @synthesize pickerDelegate = _pickerDelegate;
@@ -53,6 +55,7 @@
 	// Determine what's available
 	self.cameraAvailable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
 	self.libraryAvailable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum];
+	self.videoCaptureAvailable = self.cameraAvailable && [[UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera]containsObject:(NSString*)kUTTypeMovie];
 	
 	NSString *destructiveButtonTitle = nil;
 	if(self.existingImage){

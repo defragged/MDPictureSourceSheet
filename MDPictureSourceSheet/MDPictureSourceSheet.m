@@ -86,38 +86,38 @@
 	if(self.existingImage){
 		// If there's already an image set, give the option to delete it.
 		destructiveButtonTitle = NSLocalizedStringWithDefaultValue(@"RemoveImageButtonLabel",
-																   @"PictureSourceSheet",
+																   @"MDPictureSourceSheet",
 																   [NSBundle mainBundle],
 																   @"Remove Image",
 																   @"Title for button to delete an image");
 	}
 	
 	NSString *photoButtonText = NSLocalizedStringWithDefaultValue(@"PhotoOnlyButtonLabel",
-																  @"PictureSourceSheet",
+																  @"MDPictureSourceSheet",
 																  [NSBundle mainBundle],
 																  @"Take a Photo",
 																  @"Title for button user can use to take a picture");
 	
 	NSString *videoButtonText = NSLocalizedStringWithDefaultValue(@"VideoButtonLabel",
-																  @"PictureSourceSheet",
+																  @"MDPictureSourceSheet",
 																  [NSBundle mainBundle],
 																  @"Record a Video",
 																  @"Title for button user can use to record a video");
 	
 	NSString *photoAndVideoButtonText = NSLocalizedStringWithDefaultValue(@"PhotoAndVideoButtonLabel",
-																   @"PictureSourceSheet",
+																   @"MDPictureSourceSheet",
 																   [NSBundle mainBundle],
 																   @"Take a Photo or Video",
 																   @"Title for button user can use to either capture a video or take a picture");
 	
 	NSString *libraryButtonText = NSLocalizedStringWithDefaultValue(@"FromLibraryButtonLabel",
-																	@"PictureSourceSheet",
+																	@"MDPictureSourceSheet",
 																	[NSBundle mainBundle],
 																	@"Select from Library",
 																	@"Title for button user can press to select an image from their library instead");
 	
 	NSString *cancelButtonText = NSLocalizedStringWithDefaultValue(@"CancelButtonLabel",
-																   @"PictureSourceSheet",
+																   @"MDPictureSourceSheet",
 																   [NSBundle mainBundle],
 																   @"Cancel",
 																   @"Title for button to dismiss an action sheet without taking an action");

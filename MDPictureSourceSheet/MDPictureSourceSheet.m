@@ -80,6 +80,8 @@
 	self.libraryAvailable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum];
 	self.videoCaptureAvailable = self.cameraAvailable && [[UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera]containsObject:(NSString*)kUTTypeMovie];
 	
+	// Determine the strings to use
+	
 	NSString *destructiveButtonTitle = nil;
 	if(self.existingImage){
 		// If there's already an image set, give the option to delete it.
@@ -90,11 +92,23 @@
 																   @"Title for button to delete an image");
 	}
 	
-	NSString *cameraButtonText = NSLocalizedStringWithDefaultValue(@"FromCameraButtonLabel",
+	NSString *photoButtonText = NSLocalizedStringWithDefaultValue(@"PhotoOnlyButtonLabel",
+																  @"PictureSourceSheet",
+																  [NSBundle mainBundle],
+																  @"Take a Photo",
+																  @"Title for button user can use to take a picture");
+	
+	NSString *videoButtonText = NSLocalizedStringWithDefaultValue(@"PhotoAndVideoButtonLabel",
+																  @"PictureSourceSheet",
+																  [NSBundle mainBundle],
+																  @"Record a Video",
+																  @"Title for button user can use to record a video");
+	
+	NSString *photoAndVideoButtonText = NSLocalizedStringWithDefaultValue(@"PhotoAndVideoButtonLabel",
 																   @"PictureSourceSheet",
 																   [NSBundle mainBundle],
-																   @"Take a Picture",
-																   @"Title for button user can use to take a picture");
+																   @"Take a Photo or Video",
+																   @"Title for button user can use to either capture a video or take a picture");
 	
 	NSString *libraryButtonText = NSLocalizedStringWithDefaultValue(@"FromLibraryButtonLabel",
 																	@"PictureSourceSheet",
@@ -107,6 +121,21 @@
 																   [NSBundle mainBundle],
 																   @"Cancel",
 																   @"Title for button to dismiss an action sheet without taking an action");
+	
+	// Determine the text to use on the "From Camera" button
+	NSString *captureText = nil;
+	if(self.displayImages && (self.displayMovies && self.videoCaptureAvailable)){
+		// Capturing from both
+		captureText = photoAndVideoButtonText;
+	
+	}else if(self.displayImages && !self.displayMovies){
+		// Just displaying images
+		captureText = photoButtonText;
+	
+	}else if(self.displayMovies && !self.displayImages){
+		// Just displaying movies
+		captureText = videoButtonText;
+	}
 	
 	// Determine whether or not we will be trying to capture from the camera
 	self.capturingFromCamera = NO;
@@ -141,17 +170,18 @@
 												delegate:self
 									   cancelButtonTitle:cancelButtonText
 								  destructiveButtonTitle:destructiveButtonTitle
-									   otherButtonTitles:cameraButtonText, libraryButtonText, nil];
+									   otherButtonTitles:captureText, libraryButtonText, nil];
 		
 	}else if(self.capturingFromCamera){
-		// Only camera (and deletion) is available, show that ActionSheet
+		// Only camera (and deletion) is available: Show that ActionSheet
 		self.sheet = [[UIActionSheet alloc]initWithTitle:self.title
 												delegate:self
 									   cancelButtonTitle:cancelButtonText
 								  destructiveButtonTitle:destructiveButtonTitle
-									   otherButtonTitles:cameraButtonText, nil];
+									   otherButtonTitles:captureText, nil];
 	
 	}else if(self.libraryAvailable){
+		// Only library (and deletion) is available: Show that ActionSheet
 		self.sheet = [[UIActionSheet alloc]initWithTitle:self.title
 												delegate:self
 									   cancelButtonTitle:cancelButtonText

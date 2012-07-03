@@ -50,7 +50,7 @@
 /// The UIActionSheet's title.
 @property (strong, nonatomic) NSString *title;
 
-/// Whether or not to allow import of still images
+/// Whether or not to allow import of still images. Defaults to `YES`.
 @property (assign, nonatomic) BOOL displayImages;
 
 /// Whether or not to allow import of moving images (if available)
